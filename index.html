@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xenogears Lorebook</title>
+  <meta name="description" content="An interactive fan lorebook for Xenogears: a chronological timeline with illustrated, expandable incidents, a character web of reincarnated souls with vector portraits and in-depth dossiers, a world compendium, procedural ambient music, and a 'Sealed Record' spoiler toggle.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%230e0a0a'/%3E%3Crect x='13' y='6' width='6' height='20' rx='1.5' fill='%23d8a23a'/%3E%3Crect x='14.5' y='9' width='3' height='14' fill='%23d6443a'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <script>try{if(localStorage.getItem('xg-theme')==='light')document.body.classList.add('light');}catch(e){}</script>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <nav class="nav">
+    <div class="brand">
+      <span class="meteor">XENO<b>GEARS</b> · Lorebook</span>
+      <span class="sub">Perfect Works</span>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Views">
+      <button class="tab" id="tab-timeline" role="tab" aria-selected="true" aria-controls="view-timeline">Timeline</button>
+      <button class="tab" id="tab-relations" role="tab" aria-selected="false" aria-controls="view-relations">Characters</button>
+      <button class="tab" id="tab-compendium" role="tab" aria-selected="false" aria-controls="view-compendium">Compendium</button>
+    </div>
+    <button class="theme-btn" id="theme-btn" aria-pressed="false" title="Toggle light / dark theme">
+      <span class="theme-ic" aria-hidden="true">☀</span><span class="theme-lbl">Light</span>
+    </button>
+    <button class="audio-btn" id="audio-btn" aria-pressed="false" title="Toggle ambient music">
+      <span class="audio-ic" aria-hidden="true">♪</span><span class="audio-lbl">Ambient</span>
+    </button>
+    <div class="declassify" id="declassify" role="switch" aria-checked="false" tabindex="0" title="Unseal the records (reveal spoilers)">
+      <span class="lbl" id="declassify-lbl">Sealed</span>
+      <span class="switch" aria-hidden="true"></span>
+    </div>
+  </nav>
+
+  <main>
+    <!-- ============ TIMELINE ============ -->
+    <section class="view active" id="view-timeline" role="tabpanel" aria-labelledby="tab-timeline">
+      <header class="masthead">
+        <div class="eyebrow">ten thousand years · one soul · the god that made us</div>
+        <h1>The story of the Contact, from the <em>Eldridge</em> to the death of God</h1>
+        <p>A chronological lorebook for Xenogears — the lost eras, the floating empires, and the long cycle of reincarnation that keeps reuniting Fei and Elly. Expand any incident for the deeper story and an illustration; the deepest truths stay sealed until you unseal them.</p>
+        <div class="scroll-hint">↓ descend the cycle ↓</div>
+      </header>
+      <div class="wrap">
+        <div class="timeline-tools">
+          <button class="tl-toggle" id="expand-all" aria-pressed="false"><span class="tl-ic" aria-hidden="true">⌄</span> <span class="tl-lbl">Expand all</span></button>
+        </div>
+        <div class="timeline" id="timeline">
+          <div class="spine" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHARACTERS ============ -->
+    <section class="view" id="view-relations" role="tabpanel" aria-labelledby="tab-relations">
+      <div class="rel-layout">
+        <div class="graph-pane mode-web">
+          <div class="pane-head">
+            <div class="mode-toggle" role="group" aria-label="Character view mode">
+              <button class="mode-btn active" data-mode="web" aria-selected="true">◌ Web</button>
+              <button class="mode-btn" data-mode="grid" aria-selected="false">▦ Grid</button>
+            </div>
+            <div class="search-wrap">
+              <input type="text" id="char-search" class="search-input" placeholder="Search characters…" autocomplete="off" aria-label="Search characters">
+              <div class="search-results" id="search-results" role="listbox"></div>
+            </div>
+          </div>
+          <div class="pane-body">
+            <svg id="graph" role="img" aria-label="Interactive character web of reincarnated souls. Select a character to open their dossier and connections."></svg>
+            <div class="legend" aria-hidden="true">
+              <b>Ties</b>
+              <div class="row"><span class="ic" style="color:var(--rose)">♥</span> love</div>
+              <div class="row"><span class="ic" style="color:var(--soldier-blue)">✦</span> bond</div>
+              <div class="row"><span class="ic" style="color:var(--gold)">⛓</span> family</div>
+              <div class="row"><span class="ic" style="color:var(--jenova)">◈</span> same soul</div>
+              <div class="row"><span class="ic" style="color:var(--crimson)">⚔</span> enmity</div>
+            </div>
+            <div class="graph-hint">click a node · drag to rearrange · unseal for hidden ties</div>
+            <div id="roster" class="roster" aria-label="Character roster"></div>
+          </div>
+        </div>
+        <aside class="dossier" id="dossier" aria-live="polite">
+          <div class="empty">
+            <span class="orb">◆</span>
+            Select a character<br>to open their dossier
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ COMPENDIUM ============ -->
+    <section class="view" id="view-compendium" role="tabpanel" aria-labelledby="tab-compendium">
+      <div class="wrap">
+        <div class="section-intro">
+          <span class="eyebrow">World Compendium</span>
+          <h2>The machinery of god and soul</h2>
+          <p>The powers, peoples, and mysteries Xenogears is built on — from the Zohar and Deus to the cycle of reincarnation that drives it all.</p>
+        </div>
+        <div class="comp-grid" id="comp-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    A fan-made lorebook · Xenogears is © SQUARE ENIX · No affiliation · <a href="https://github.com/nicholaslie90/xg-lore">source</a>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/portraits.js"></script>
+  <script src="js/scenes.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
