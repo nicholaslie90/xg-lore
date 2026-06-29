@@ -6,6 +6,16 @@
 const charById = Object.fromEntries(CHARACTERS.map(c => [c.id, c]));
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+/* ---- mobile dossier modal ---- */
+const dossierBackdrop = document.createElement("div");
+dossierBackdrop.className = "dossier-backdrop";
+(document.getElementById("view-relations") || document.body).appendChild(dossierBackdrop);
+function isMobileView() { return window.matchMedia("(max-width: 880px)").matches; }
+function openDossierModal() { if (isMobileView()) document.body.classList.add("dossier-open"); }
+function closeDossierModal() { document.body.classList.remove("dossier-open"); }
+dossierBackdrop.addEventListener("click", closeDossierModal);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDossierModal(); });
+
 function shortName(c) { return c.short || c.name.split(" ")[0]; }
 function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
 function hexA(hex, a) {
@@ -405,8 +415,8 @@ function applySelectionStyles() {
   });
   buildEdgeLabels(id);
 }
-function selectNode(id) { selectedId = id; applySelectionStyles(); renderDossier(id); closeSearch(); markRosterSelected(id); }
-function clearSelection() { selectedId = null; applySelectionStyles(); }
+function selectNode(id) { selectedId = id; applySelectionStyles(); renderDossier(id); closeSearch(); markRosterSelected(id); openDossierModal(); }
+function clearSelection() { selectedId = null; applySelectionStyles(); closeDossierModal(); }
 
 function renderDossier(id) {
   const c = charById[id];
@@ -426,6 +436,7 @@ function renderDossier(id) {
   const tidbit = c.tidbit ? `<div class="tidbit"><span class="tidbit-h">◈ Did you know?</span><p>${c.tidbit}</p></div>` : "";
 
   dossier.innerHTML = `
+    <button class="dossier-close" type="button" aria-label="Close">\u2715</button>
     <div class="dos-head">
       <div class="dos-avatar" style="--ring:${fac.color}; --glow:${hexA(fac.color, 0.5)}">${portraitSVG(c, 72, "big")}</div>
       <div><h2>${c.name}</h2><div class="dos-faction" style="color:${fac.color}">${fac.name}</div></div>
@@ -445,6 +456,8 @@ function renderDossier(id) {
     li.addEventListener("click", () => selectNode(li.dataset.go));
     li.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectNode(li.dataset.go); } });
   });
+  const dc = dossier.querySelector(".dossier-close");
+  if (dc) dc.addEventListener("click", closeDossierModal);
   dossier.scrollTop = 0;
 }
 
@@ -532,6 +545,7 @@ const tabs = {
   compendium: { btn: document.getElementById("tab-compendium"), view: document.getElementById("view-compendium") },
 };
 function switchView(key) {
+  closeDossierModal();
   Object.entries(tabs).forEach(([k, t]) => {
     const on = k === key;
     t.btn.setAttribute("aria-selected", on ? "true" : "false");
