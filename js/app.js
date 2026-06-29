@@ -417,6 +417,17 @@ function applySelectionStyles() {
 }
 function selectNode(id) { selectedId = id; applySelectionStyles(); renderDossier(id); closeSearch(); markRosterSelected(id); openDossierModal(); }
 function clearSelection() { selectedId = null; applySelectionStyles(); closeDossierModal(); }
+/* arrow keys: previous / next character */
+document.addEventListener("keydown", (e) => {
+  if (!selectedId) return;
+  const t = e.target;
+  if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
+  if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+  const order = CHARACTERS.map(x => x.id).sort((a, b) => charById[a].name.localeCompare(charById[b].name));
+  const i = order.indexOf(selectedId);
+  if (i < 0) return;
+  selectNode(order[(i + (e.key === "ArrowRight" ? 1 : -1) + order.length) % order.length]);
+});
 
 function renderDossier(id) {
   const c = charById[id];
@@ -451,6 +462,10 @@ function renderDossier(id) {
     ${tidbit}
     <div class="dos-role">Connections</div>
     <ul class="rel-list">${relItems || '<li style="cursor:default"><span class="rtype">no ties revealed — try declassifying</span></li>'}</ul>
+    <div class="dos-nav">
+      <button class="dos-prev" type="button" aria-label="Previous character">‹ Prev</button>
+      <button class="dos-next" type="button" aria-label="Next character">Next ›</button>
+    </div>
   `;
   dossier.querySelectorAll(".rel-list li[data-go]").forEach(li => {
     li.addEventListener("click", () => selectNode(li.dataset.go));
@@ -458,6 +473,11 @@ function renderDossier(id) {
   });
   const dc = dossier.querySelector(".dossier-close");
   if (dc) dc.addEventListener("click", closeDossierModal);
+  const dorder = CHARACTERS.map(x => x.id).sort((a, b) => charById[a].name.localeCompare(charById[b].name));
+  const dci = dorder.indexOf(id);
+  const pv = dossier.querySelector(".dos-prev"), nx = dossier.querySelector(".dos-next");
+  if (pv) pv.addEventListener("click", () => selectNode(dorder[(dci - 1 + dorder.length) % dorder.length]));
+  if (nx) nx.addEventListener("click", () => selectNode(dorder[(dci + 1) % dorder.length]));
   dossier.scrollTop = 0;
 }
 
@@ -571,41 +591,6 @@ declassify.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key =
 
 let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(run, 200); });
 
-/* ============================================================
-   AMBIENT AUDIO CONTROL
-   ============================================================ */
-(function audioControl() {
-  const btn = document.getElementById("audio-btn");
-  if (!btn || !FFAudio.isReady()) { if (btn) btn.style.display = "none"; return; }
-  const icon = btn.querySelector(".audio-ic");
-  const lbl = btn.querySelector(".audio-lbl");
-  const PREF = "xg-ambient";
-
-  FFAudio.onState = (playing) => {
-    btn.setAttribute("aria-pressed", playing ? "true" : "false");
-    btn.classList.toggle("on", playing);
-    icon.textContent = playing ? "♪" : "♪";
-    lbl.textContent = playing ? "Lifestream" : "Muted";
-  };
-
-  btn.addEventListener("click", () => {
-    FFAudio.toggle();
-    try { localStorage.setItem(PREF, FFAudio.isPlaying() ? "on" : "off"); } catch (e) {}
-  });
-
-  // Autoplay-on-first-interaction (browsers block sound before a gesture)
-  function firstGesture(e) {
-    // if the first interaction IS the audio button, let its own handler decide
-    if (e && e.target && e.target.closest && e.target.closest("#audio-btn")) return;
-    document.removeEventListener("pointerdown", firstGesture);
-    document.removeEventListener("keydown", firstGesture);
-    let pref = null;
-    try { pref = localStorage.getItem(PREF); } catch (e2) {}
-    if (pref !== "off") FFAudio.start();
-  }
-  document.addEventListener("pointerdown", firstGesture, { once: false });
-  document.addEventListener("keydown", firstGesture, { once: false });
-})();
 
 /* ============================================================
    THEME TOGGLE (dark / light)

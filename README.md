@@ -16,8 +16,6 @@ copyrighted assets are redistributed here:
 
 - All **character portraits** and **event illustrations** are original vector
   graphics drawn in code — no official art or screenshots are used.
-- The **background music** is original ambient audio synthesized live in the
-  browser (Web Audio API) — **no Xenogears music is included or distributed.**
 
 If you are a rights holder and have any concerns, please open an issue.
 
@@ -40,8 +38,6 @@ If you are a rights holder and have any concerns, please open an issue.
   ties, so the reincarnation web visibly grows as you unlock it.
 - **Light / dark theme** — a deep oxblood "night" theme, or an aged-manuscript
   parchment light theme. Remembered across visits.
-- **Ambient audio** — an optional, original procedural soundscape (starts on first
-  interaction; browsers block autoplay-with-sound).
 
 ## Run it
 
@@ -59,7 +55,6 @@ css/styles.css       all styling (dark + light themes)
 js/data.js           lore data: characters, relationships, events, compendium
 js/portraits.js      parametric vector character portraits (+ a Chu-Chu special)
 js/scenes.js         vector illustrations for timeline incidents
-js/audio.js          procedural ambient (Web Audio API)
 js/app.js            timeline, graph, search, dossier, view + spoiler + theme logic
 ```
 
