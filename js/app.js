@@ -448,6 +448,7 @@ function renderDossier(id) {
 
   dossier.innerHTML = `
     <button class="dossier-close" type="button" aria-label="Close">\u2715</button>
+    <div class="dos-body">
     <div class="dos-head">
       <div class="dos-avatar" style="--ring:${fac.color}; --glow:${hexA(fac.color, 0.5)}">${portraitSVG(c, 72, "big")}</div>
       <div><h2>${c.name}</h2><div class="dos-faction" style="color:${fac.color}">${fac.name}</div></div>
@@ -462,6 +463,7 @@ function renderDossier(id) {
     ${tidbit}
     <div class="dos-role">Connections</div>
     <ul class="rel-list">${relItems || '<li style="cursor:default"><span class="rtype">no ties revealed — try declassifying</span></li>'}</ul>
+    </div>
     <div class="dos-nav">
       <button class="dos-prev" type="button" aria-label="Previous character">‹ Prev</button>
       <button class="dos-next" type="button" aria-label="Next character">Next ›</button>
