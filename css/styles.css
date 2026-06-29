@@ -414,3 +414,8 @@ footer a { color: var(--mako-dim); }
 .dos-nav button:hover { border-color: var(--mako); color: var(--mako); }
 .dos-nav button:active { background: var(--panel); }
 .dos-nav button:focus-visible { outline: 2px solid var(--mako); outline-offset: 2px; }
+
+/* ---- "appears in" chips ---- */
+.appears { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 3px; }
+.appx { font-family: var(--font-mono); font-size: .58rem; letter-spacing: .04em; padding: 3px 8px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--ax) 45%, transparent); color: var(--ax); white-space: nowrap; }
+.appx.debut { background: color-mix(in srgb, var(--ax) 16%, transparent); font-weight: 700; }

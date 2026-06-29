@@ -445,6 +445,9 @@ function renderDossier(id) {
     : "";
   const spoilerSec = c.spoilerBio ? `<div class="dos-role">Hidden truth</div><p class="bio spoiler">${c.spoilerBio}</p>` : "";
   const tidbit = c.tidbit ? `<div class="tidbit"><span class="tidbit-h">◈ Did you know?</span><p>${c.tidbit}</p></div>` : "";
+  const apps = (typeof APPEARANCES !== "undefined" && APPEARANCES[id]) || [];
+  const appsHtml = apps.length ? `<div class="dos-role">Appears in</div><div class="appears">${apps.map((g, i) => `<span class="appx${i === 0 ? " debut" : ""}" style="--ax:${ENTRY[g] || "var(--mako)"}">${i === 0 ? "★ " : ""}${g}</span>`).join("")}</div>` : "";
+
 
   dossier.innerHTML = `
     <button class="dossier-close" type="button" aria-label="Close">\u2715</button>
@@ -454,6 +457,7 @@ function renderDossier(id) {
       <div><h2>${c.name}</h2><div class="dos-faction" style="color:${fac.color}">${fac.name}</div></div>
     </div>
     <div class="dos-subtitle">${c.role}</div>
+    ${appsHtml}
     <div class="dos-role">Temperament</div>
     <p class="bio">${c.personality}</p>
     <div class="dos-role">In the story</div>
